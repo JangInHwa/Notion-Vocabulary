@@ -51,10 +51,24 @@ if __name__ == '__main__':
     quizlet_url = input('Enter Quizlet url : ')
     words: list[Word] = getQuizletWordList(quizlet_url)
     notion_page_name = input('Notion Word List Page Name : ')
-    shuffle_str = input('shuffle?(y/n) : ')
-    if shuffle_str == 'y':
+    shuffle = input('shuffle?(y/n) : ')
+    if shuffle == 'y':
         random.shuffle(words)
-    elif shuffle_str != 'n':
+    elif shuffle != 'n':
+        print('invalid answer!')
+        exit()
+    has_filter = input('filter memorized words?(y/n)')
+    if has_filter == 'y':
+        filtered_words = input('list words to retain (separated by spaces)\n').split()
+        tmp_words = words
+        words = []
+        filtered_word:str
+        for filtered_word in filtered_words:
+            words += list(filter(lambda w: w.eng == filtered_word, tmp_words))
+        if len(words) == 0:
+            print('There\'s no word to memorize!')
+            exit()
+    elif has_filter != 'n':
         print('invalid answer!')
         exit()
 
