@@ -1,7 +1,8 @@
-from notion.block import Children, CollectionViewPageBlock
+from notion.block import CollectionViewPageBlock
 from notion.client import NotionClient
 import json
 from quizlet import Word, getQuizletWordList
+import random
 
 
 def get_schema_todo():
@@ -50,6 +51,12 @@ if __name__ == '__main__':
     quizlet_url = input('Enter Quizlet url : ')
     words: list[Word] = getQuizletWordList(quizlet_url)
     notion_page_name = input('Notion Word List Page Name : ')
+    shuffle_str = input('shuffle?(y/n) : ')
+    if shuffle_str == 'y':
+        random.shuffle(words)
+    elif shuffle_str != 'n':
+        print('invalid answer!')
+        exit()
 
     client = NotionClient(token_v2=notion_token_v2)
 
