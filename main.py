@@ -57,7 +57,7 @@ if __name__ == '__main__':
     elif shuffle != 'n':
         print('invalid answer!')
         exit()
-    has_filter = input('filter memorized words?(y/n)')
+    has_filter = input('filter memorized words?(y/n) : ')
     if has_filter == 'y':
         filtered_words = input('list words to retain (separated by spaces)\n').split()
         tmp_words = words
