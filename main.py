@@ -7,17 +7,16 @@ from quizlet import Word, getQuizletWordList
 def get_schema_todo():
 	return {
 		# title 항상 존재 해야한다
-		"title": {"name": "영단어  ", "type": "title"},
-		"mean1": {"name": "뜻                ", "type": "text"},
-		"eng2": {"name": "영단어  ", "type": "text"},
-		"mean2": {"name": "뜻               ", "type": "text"},
-		"hidden_mean1": {"name": "뜻                ", "type": "text"},
-		"hidden_mean2": {"name": "뜻               ", "type": "text"},
+		"title": {"name": "영단어 ", "type": "title"},
+		"mean1": {"name": "뜻           ", "type": "text"},
+		"eng2": {"name": "영단어 ", "type": "text"},
+		"mean2": {"name": "뜻           ", "type": "text"},
 	}
 
 
 if __name__ == '__main__':
 	quizlet_url = input('Enter Quizlet url : ')
+	notion_page_name = input('Notion Word List Page Name : ')
 	words: list[Word] = getQuizletWordList(quizlet_url)
 	with open("notion-config.json", "r") as f:
 		notion_config_json = f.read()
@@ -37,32 +36,27 @@ if __name__ == '__main__':
 		client.create_record(
 			"collection", parent=meaning_collection, schema=get_schema_todo())
 	)
-	meaning_collection.title = '생성한 테이블'
+	meaning_collection.title = notion_page_name
 	view = meaning_collection.views.add_new(view_type="table")
-
-	for index in range(0, len(words), 2):
-		row = meaning_collection.collection.add_row()
-		row.title = words[index].eng
-		row.set_property('mean1', words[index].meaning)
-		print('add word on notion (' + str(index+1) + ' of ' + str(len(words)) + ')')
-		if index + 1 >= len(words):
-			break
-		row.set_property('eng2', words[index+1].eng)
-		row.set_property('mean2', words[index+1].meaning)
-		print('add word on notion (' + str(index+2) + ' of ' + str(len(words)) + ')')
 
 	hidden_meaning_collection:CollectionViewPageBlock = page.children.add_new(CollectionViewPageBlock)
 	hidden_meaning_collection.collection = client.get_collection(
 		client.create_record(
 			"collection", parent=hidden_meaning_collection, schema=get_schema_todo())
 	)
-	hidden_meaning_collection.title = '생성한 테이블' + '(hidden meaning)'
+	hidden_meaning_collection.title = notion_page_name + ' (hidden meaning)'
 	hidden_meaning_collection.views.add_new(view_type="table")
+
 	for index in range(0, len(words), 2):
-		row = hidden_meaning_collection.collection.add_row()
-		row.title = words[index].eng
+		meaning_row = meaning_collection.collection.add_row()
+		meaning_row.title = words[index].eng
+		meaning_row.set_property('mean1', words[index].meaning)
+		hidden_meaning_row = hidden_meaning_collection.collection.add_row()
+		hidden_meaning_row.title = words[index].eng
 		print('add word on notion (' + str(index+1) + ' of ' + str(len(words)) + ')')
 		if index + 1 >= len(words):
 			break
-		row.set_property('eng2', words[index+1].eng)
+		meaning_row.set_property('eng2', words[index+1].eng)
+		meaning_row.set_property('mean2', words[index+1].meaning)
+		hidden_meaning_row.set_property('eng2', words[index+1].eng)
 		print('add word on notion (' + str(index+2) + ' of ' + str(len(words)) + ')')
