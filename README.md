@@ -1,5 +1,5 @@
 # Notion-Vocabulary
-Notion API와 Quizlet 크롤링을 이용해 영단어 암기를 도와주는 프로그램
+퀴즐렛을 크롤링해 노션에 단어 리스트를 만들어주는 프로그램
 
 ```
 pip install -r requirements.txt
